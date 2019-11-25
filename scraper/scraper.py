@@ -39,7 +39,7 @@ def get()-> 'list':
 							"symbol": row_data[3].text.strip(),
 							"market": row_data[4].text.strip(),
 							"price_usd": sub(r'[^\d.]', '', row_data[5].text.strip()),
-							"shares": row_data[6].text.strip(),
+							"shares": row_data[6].text.strip().replace(",", ""),
 							"offer_amount_usd": sub(r'[^\d.]', '', row_data[7].text.strip())})
 	assert(len(companies) > 0)
 	return companies
