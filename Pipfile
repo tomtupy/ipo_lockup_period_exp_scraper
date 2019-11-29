@@ -9,6 +9,7 @@ verify_ssl = true
 lxml="*"
 requests="*"
 pytest="*"
+pyyaml="*"
 
 [requires]
 python_version = "3.7"

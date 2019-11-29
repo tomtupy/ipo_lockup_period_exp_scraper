@@ -43,3 +43,63 @@ def get()-> 'list':
 							"offer_amount_usd": sub(r'[^\d.]', '', row_data[7].text.strip())})
 	assert(len(companies) > 0)
 	return companies
+
+if __name__ == "__main__":
+	from optparse import OptionParser
+	import yaml
+	import json
+	import logging
+	logging.basicConfig(level=logging.DEBUG)
+	parser = OptionParser()
+	parser.add_option("-k", "--kafka-config", type="string", dest="kafka_config")
+	(options, args) = parser.parse_args()
+
+	# retrieve data
+	ipo_data = get()
+	logging.info(ipo_data)
+
+	# publish to kafka if config is specified
+	if options.kafka_config is not None:
+		from confluent_kafka import avro
+		from confluent_kafka.avro import AvroProducer
+
+		config = None
+		with open(options.kafka_config) as f:
+			try:
+				config = yaml.safe_load(f)
+			except yaml.YAMLError as exc:
+				logging.error(exc)
+				exit(1)
+
+		value_schema = avro.loads(json.dumps(config['value-schema']))
+
+		avroProducer = AvroProducer({
+			  'bootstrap.servers': f"{config['connection']['kafka-host']}:{config['connection']['kafka-port']}",
+			  'schema.registry.url': f"http://{config['connection']['schema-registry-host']}:{config['connection']['schema-registry-port']}"
+			  }, default_value_schema=value_schema)
+
+		for ipo_record in ipo_data:
+			# sample ipo record
+			# {'expiration_date': '11/4/2019',
+			#  'priced_date': '5/7/2019',
+			#  'company_name': 'LANDCADIA HOLDINGS II, INC.',
+			#  'symbol': 'LCAHU',
+			#  'market': 'NASDAQ Capital',
+			#  'price_usd': '10.00',
+			#  'shares': '27500000',
+			#  'offer_amount_usd': '275000000.00'}
+
+			# skip priced date
+			ipo_record.pop('priced_date')
+
+			# cast types
+			ipo_record['price'] = float(ipo_record['price'])
+			ipo_record['offer_amount'] = float(ipo_record['offer_amount'])
+			ipo_record['shares'] = int(ipo_record['shares'])
+
+			logging.debug("Publising", ipo_record)
+
+			avroProducer.produce(topic=config['topic'], value=ipo_record)
+
+		# Flush messages
+		avroProducer.flush()
