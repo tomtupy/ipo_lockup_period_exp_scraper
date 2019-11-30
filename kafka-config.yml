@@ -1,15 +1,15 @@
 connection:
-  - kafka-host: 192.168.1.63
-  - kafka-port: 9092
-  - schema-registry-host: 192.168.1.63
-  - schema-registry-port: 8081
+  kafka-host: 192.168.1.63
+  kafka-port: 9092
+  schema-registry-host: 192.168.1.63
+  schema-registry-port: 8081
 topic: "lockup_period_expirations"
 value-schema:
   namespace: "ipos.lockup_period_expirations"
   name: "value"
   type: "record"
   fields: 
-    - name: "expiration"
+    - name: "expiration_date"
       type: "string"
     - name: "symbol"
       type: "string"
@@ -17,9 +17,9 @@ value-schema:
       type: "string"
     - name: "company_name"
       type: "string"
-    - name: "price"
+    - name: "price_usd"
       type: "double"
-    - name: "offer_amount"
+    - name: "offer_amount_usd"
       type: "double"
     - name: "shares"
       type: "long"

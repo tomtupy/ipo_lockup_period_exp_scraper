@@ -93,8 +93,8 @@ if __name__ == "__main__":
 			ipo_record.pop('priced_date')
 
 			# cast types
-			ipo_record['price'] = float(ipo_record['price'])
-			ipo_record['offer_amount'] = float(ipo_record['offer_amount'])
+			ipo_record['price_usd'] = float(ipo_record['price_usd'])
+			ipo_record['offer_amount_usd'] = float(ipo_record['offer_amount_usd'])
 			ipo_record['shares'] = int(ipo_record['shares'])
 
 			logging.debug("Publising", ipo_record)
