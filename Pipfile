@@ -10,6 +10,9 @@ lxml="*"
 requests="*"
 pytest="*"
 pyyaml="*"
+kafka-python = "*"
+avro-python3 = "*"
+confluent_kafka = "*"
 
 [requires]
 python_version = "3.7"
