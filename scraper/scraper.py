@@ -4,7 +4,7 @@ from re import sub
 import time
 import logging
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import *
 # Set the threshold for selenium to WARNING
 from selenium.webdriver.remote.remote_connection import LOGGER as seleniumLogger
@@ -74,10 +74,13 @@ def get_next_results_link(driver):
 
 def get(months = DEFAULT_MONTHS_LOOKAHEAD)-> 'list':
 	# Load webdriver
-	options = Options()
-	options.headless = True
+	chrome_options = Options()  
+	chrome_options.add_argument("--headless")
+	chrome_options.add_argument('--no-sandbox')
+	chrome_options.add_argument('--disable-dev-shm-usage')
+	chrome_options.headless = True
 	logging.info("Loading Driver")
-	driver = webdriver.Firefox(options=options)
+	driver = webdriver.Chrome(options=chrome_options)
 	# Get Link to lockup expirations page
 	driver.get(f'{BASE_URL}/{BASE_PAGE}')
 
