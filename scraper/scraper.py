@@ -15,6 +15,7 @@ urllibLogger.setLevel(logging.WARNING)
 
 # contants
 DEFAULT_MONTHS_LOOKAHEAD = 2
+AFTER_LOAD_WAIT_TIME_SEC = 5
 BASE_URL = "https://pro.edgar-online.com"
 BASE_PAGE = "IPO.aspx"
 IPO_MENU_LP_EXP_ITEM_ID = "ucIPOLeftNavLPExpirations"
@@ -108,7 +109,7 @@ def get(months = DEFAULT_MONTHS_LOOKAHEAD)-> 'list':
 			elem_link = get_next_month_link(driver)
 			logging.info(f" * Navigating to next month {elem_link}")
 			driver.execute_script(f'{elem_link}')
-			time.sleep(5)
+			time.sleep(AFTER_LOAD_WAIT_TIME_SEC)
 
 		next_link = "current"
 		while next_link is not None:
@@ -120,10 +121,9 @@ def get(months = DEFAULT_MONTHS_LOOKAHEAD)-> 'list':
 			# Check for next page
 			next_link = get_next_results_link(driver)
 			if next_link is not None:
-
 				logging.info(f" * Navigating to next page {next_link}")
 				driver.execute_script(f'{next_link}')
-				time.sleep(5)
+				time.sleep(AFTER_LOAD_WAIT_TIME_SEC)
 
 	# Kill driver
 	driver.quit()
