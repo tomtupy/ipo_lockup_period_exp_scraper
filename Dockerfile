@@ -1,4 +1,4 @@
-FROM arm64v8/python:3.7-slim-stretch
+FROM python:3.7-slim-stretch
 
 # Setup environment
 RUN apt-get update -yqq \
@@ -10,7 +10,8 @@ RUN apt-get update -yqq \
         python-lxml \
         libz-dev \
         curl \
-        build-essential
+        build-essential \
+        firefox-esr
 
 # Build librdkafka
 RUN curl -L https://github.com/edenhill/librdkafka/archive/v1.2.2.tar.gz | tar xzf -
@@ -19,6 +20,10 @@ RUN ./configure --prefix=/usr
 RUN make -j
 RUN make install
 WORKDIR /
+
+# Install geckodriver
+RUN curl -L https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz | tar xzf -
+RUN mv geckodriver /usr/local/bin/
 
 RUN pip install pipenv
 
