@@ -1,7 +1,7 @@
 connection:
-  kafka-host: 192.168.1.63
+  kafka-host: 192.168.1.64
   kafka-port: 9092
-  schema-registry-host: 192.168.1.63
+  schema-registry-host: 192.168.1.64
   schema-registry-port: 8081
 topic: "lockup_period_expirations"
 value-schema:
